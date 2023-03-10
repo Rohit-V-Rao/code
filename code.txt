@@ -1,0 +1,57 @@
+import java.util.*;
+
+ class RecentlyPlayedSongsStore
+{
+    
+     int capacity;
+     Map<String, LinkedList<String>> store;
+    
+    public RecentlyPlayedSongsStore(int capacity) 
+    {
+        this.capacity = capacity;
+        store = new HashMap<>();
+    }
+    
+    public void addSong(String userId, String song)
+    {
+        LinkedList<String> songList = store.getOrDefault(userId, new LinkedList<>());
+        songList.remove(song);
+        songList.addFirst(song); 
+        
+        if (songList.size() > capacity) 
+        {
+            songList.removeLast(); 
+        }
+       
+       store.put(userId, songList);
+    }
+    
+    public List<String> getRecentlyPlayedSongs(String userId) 
+    {
+        LinkedList<String> songList = store.get(userId);
+        if (songList == null)
+        {
+            return Collections.emptyList();
+        }
+        return new ArrayList<>(songList);
+    }
+    
+     public static void main(String[] args) 
+     {
+        RecentlyPlayedSongsStore store = new RecentlyPlayedSongsStore(3);
+        store.addSong("user1", "song1");
+        store.addSong("user1", "song2");
+        store.addSong("user1", "song3");
+        
+        System.out.println(store.getRecentlyPlayedSongs("user1")); 
+        store.addSong("user1", "song4");
+        
+        System.out.println(store.getRecentlyPlayedSongs("user1"));
+        store.addSong("user1", "song2");
+        
+        System.out.println(store.getRecentlyPlayedSongs("user1")); 
+        store.addSong("user1", "song1");
+        
+        System.out.println(store.getRecentlyPlayedSongs("user1")); 
+    }
+}
